@@ -15,6 +15,7 @@ public class Game extends JFrame {
 
     private Board board;
     private BlockFactory blockFactory;
+    private Block currentControlBlock;
 
     public Game() {
         addKeyListener(new Controller());
@@ -40,6 +41,10 @@ public class Game extends JFrame {
                     board.updateBoard();
                     gridUi.repaint();
                     // game logic
+                    // ถ้า currentControlBlock นิ่งแล้วให้ extract block มาใหม่
+                    // แล้ว set currentControlBlock ใหม่
+                    // รอเอาโค้ด Block fall
+
                     gameOver = isGameOver();
 
                     waitFor(delayed);
