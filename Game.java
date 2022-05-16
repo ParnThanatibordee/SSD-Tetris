@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class Game extends JFrame {
     private int boardSizeX = 10;
@@ -12,7 +13,11 @@ public class Game extends JFrame {
     private long delayed = 200;
     private boolean gameOver;
 
+    private Board board;
+
     public Game() {
+        Board board = new Board();
+
         gameOver = false;
         gridUi = new GridUi();
         add(gridUi);
@@ -28,7 +33,10 @@ public class Game extends JFrame {
             public void run() {
                 while(!gameOver) {
                     // update
+                    gridUi.repaint();
                     // game logic
+                    gameOver = isGameOver();
+
                     waitFor(delayed);
                 }
             }
@@ -62,6 +70,18 @@ public class Game extends JFrame {
         public void keyPressed(KeyEvent e) {
 
         }
+    }
+
+    private boolean isGameOver() {
+        // เอาตามวิธีที่เก็บ cell
+        ArrayList<Cell> cells = board.getCells();
+        Integer maxY = 0;
+        for (int i = 0; i < cells.size(); i++) {
+            if (maxY < cells.get(i).getY())
+                maxY = cells.get(i).getY();
+        }
+
+        return maxY >= boardSizeY - 1;
     }
 
     public static void main(String[] args) {
