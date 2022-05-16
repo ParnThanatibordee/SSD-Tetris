@@ -1,11 +1,10 @@
 import java.awt.*;
 
 public class Cell {
-
     private boolean covered;
 
     public Cell() {
-        covered = true;
+        covered = false;
     }
     public boolean isCovered() {
         return covered;
