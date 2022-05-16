@@ -1,16 +1,28 @@
+import java.awt.*;
 import java.util.ArrayList;
 
+// create tertis board
 public class Board {
-    private int boardSizeX;
-    private int boardSizeY;
-    private Cell [][] cells;  // cells[col][row]
+    private Cell[][] cells;
+    private int width;
+    private int height;
     private ArrayList<Block> blocks = new ArrayList<Block>();
 
-    public Board(int boardSizeX, int boardSizeY) {
-        this.boardSizeX = boardSizeX;
-        this.boardSizeY = boardSizeY;
+    public Board(int width, int height) {
+        this.width = width;
+        this.height = height;
+        initCells();
     }
 
+    private void initCells() {
+        cells = new Cell[width][height];
+        for (int row = 0; row < width; row++) {
+            for (int column = 0; column < height; column++) {
+                cells[row][column] = new Cell();
+              }
+        }
+    }
+  
     public boolean blockOverCeil() {
         Integer maxY = 0;
         for (int i = 0; i < blocks.size(); i++) {
@@ -18,21 +30,27 @@ public class Board {
                 maxY = blocks.get(i).getY();
         }
 
-        return maxY >= boardSizeY - 1;
+        return maxY >= height - 1;
     }
 
     public void removeFullFillRow() {
-        for (int col = 0; col < boardSizeY; col++) {
+        for (int col = 0; col < height; col++) {
             if (blockFullFillRow(col)) {
                 // remove block in that row
             }
         }
     }
 
+    public Cell getCell (int row, int col) {
+        if (row < 0 || col < 0 || row >= width || col >= height) { return null; }
+        return cells[row][col];
+    }
+}
+
     public boolean blockFullFillRow(int col) {
         boolean filled = true;
-        for (int row = 0; row < boardSizeX; row++) {
-            if (!cells[col][row].isBlocked()) {
+        for (int row = 0; row < width; row++) {
+            if (!cells[row][col].isCovered()) {
                 filled = false;
             }
         }

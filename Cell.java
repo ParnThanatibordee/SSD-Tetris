@@ -1,15 +1,15 @@
+import java.awt.*;
+
 public class Cell {
-    boolean blocked;
+    private boolean covered;
 
     public Cell() {
-        blocked = false;
+        covered = false;
     }
-
-    public boolean isBlocked() {
-        return blocked;
+    public boolean isCovered() {
+        return covered;
     }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
+    public void setCovered(boolean covered) {
+        this.covered = covered;
     }
 }
