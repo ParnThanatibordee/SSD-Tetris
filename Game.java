@@ -16,7 +16,7 @@ public class Game extends JFrame {
     private Board board;
 
     public Game() {
-        Board board = new Board();
+        Board board = new Board(boardSizeX, boardSizeY);
 
         gameOver = false;
         gridUi = new GridUi();
@@ -33,6 +33,7 @@ public class Game extends JFrame {
             public void run() {
                 while(!gameOver) {
                     // update
+                    board.updateBoard();
                     gridUi.repaint();
                     // game logic
                     gameOver = isGameOver();
@@ -73,15 +74,7 @@ public class Game extends JFrame {
     }
 
     private boolean isGameOver() {
-        // เอาตามวิธีที่เก็บ cell
-        ArrayList<Cell> cells = board.getCells();
-        Integer maxY = 0;
-        for (int i = 0; i < cells.size(); i++) {
-            if (maxY < cells.get(i).getY())
-                maxY = cells.get(i).getY();
-        }
-
-        return maxY >= boardSizeY - 1;
+        return board.blockOverCeil();
     }
 
     public static void main(String[] args) {
