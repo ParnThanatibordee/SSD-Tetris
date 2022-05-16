@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Game extends JFrame {
     private int boardSizeX = 10;
@@ -12,14 +10,17 @@ public class Game extends JFrame {
     private boolean gameOver;
 
     private Board board;
-    private BlockFactory blockFactory;
-    private Block currentControlBlock = null;
+//    private BlockFactory blockFactory;
+
+    private BlockGenerator blockGenerate;
+
+    private Block block;
 
     public Game() {
-        addKeyListener(new Controller());
+//        addKeyListener(new Controller());
 
         board = new Board(boardSizeX, boardSizeY);
-        blockFactory = new BlockFactory();
+//        blockFactory = new BlockFactory();
 
         gameOver = false;
         gridUi = new GridUi();
@@ -92,32 +93,33 @@ public class Game extends JFrame {
                 g.fillRect(x + 1, y + 1,
                         CELL_PIXEL_SIZE - 2, CELL_PIXEL_SIZE - 2);
             } else {
-                g.setColor(Color.WHITE);
-                g.fillRect(x, y, CELL_PIXEL_SIZE, CELL_PIXEL_SIZE);
+
+
+            }
+
             }
         }
-    }
   
-    class Controller extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
-            // currentControlBlock อาจจะเก็บใน game หรือ block factory
-            if (currentControlBlock != null) {
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    Command c = new CommandMoveDown(currentControlBlock);
-                    c.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    Command c = new CommandMoveLeft(currentControlBlock);
-                    c.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    Command c = new CommandMoveRight(currentControlBlock);
-                    c.execute();
-                }
-                // rotate block
-            }
-        }
-    }
+//    class Controller extends KeyAdapter {
+//        @Override
+//        public void keyPressed(KeyEvent e) {
+//            // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
+//            // currentControlBlock อาจจะเก็บใน game หรือ block factory
+//            if (currentControlBlock != null) {
+//                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+//                    Command c = new CommandMoveDown(currentControlBlock);
+//                    c.execute();
+//                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+//                    Command c = new CommandMoveLeft(currentControlBlock);
+//                    c.execute();
+//                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+//                    Command c = new CommandMoveRight(currentControlBlock);
+//                    c.execute();
+//                }
+//                // rotate block
+//            }
+//        }
+//    }
 
     private boolean isGameOver() {
         return board.blockOverCeil();

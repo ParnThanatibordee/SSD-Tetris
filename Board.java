@@ -6,6 +6,8 @@ public class Board {
     private Cell[][] cells;
     private int width;
     private int height;
+
+    private BlockShape currentShape;
     private ArrayList<Block> blocks = new ArrayList<Block>();
 
     public Board(int width, int height) {
@@ -19,10 +21,10 @@ public class Board {
         for (int row = 0; row < width; row++) {
             for (int column = 0; column < height; column++) {
                 cells[row][column] = new Cell();
-              }
+            }
         }
     }
-  
+
     public boolean blockOverCeil() {
         Integer maxY = 0;
         for (int i = 0; i < blocks.size(); i++) {
@@ -41,8 +43,10 @@ public class Board {
         }
     }
 
-    public Cell getCell (int row, int col) {
-        if (row < 0 || col < 0 || row >= width || col >= height) { return null; }
+    public Cell getCell(int row, int col) {
+        if (row < 0 || col < 0 || row >= width || col >= height) {
+            return null;
+        }
         return cells[row][col];
     }
 
