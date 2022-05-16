@@ -2,10 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 public class Game extends JFrame {
-    private Board board;
     private int boardSizeX = 10;
     private int boardSizeY = 15;
     private GridUi gridUi;
@@ -15,7 +13,7 @@ public class Game extends JFrame {
 
     private Board board;
     private BlockFactory blockFactory;
-    private Block currentControlBlock;
+    private Block currentControlBlock = null;
 
     public Game() {
         addKeyListener(new Controller());
@@ -49,6 +47,7 @@ public class Game extends JFrame {
 
                     waitFor(delayed);
                 }
+                // after finish game
             }
         };
         thread.start();
@@ -104,17 +103,19 @@ public class Game extends JFrame {
         public void keyPressed(KeyEvent e) {
             // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
             // currentControlBlock อาจจะเก็บใน game หรือ block factory
-            if(e.getKeyCode() == KeyEvent.VK_DOWN) {
-                Command c = new CommandMoveDown(currentControlBlock);
-                c.execute();
-            } else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-                Command c = new CommandMoveLeft(currentControlBlock);
-                c.execute();
-            } else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                Command c = new CommandMoveRight(currentControlBlock);
-                c.execute();
+            if (currentControlBlock != null) {
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    Command c = new CommandMoveDown(currentControlBlock);
+                    c.execute();
+                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    Command c = new CommandMoveLeft(currentControlBlock);
+                    c.execute();
+                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    Command c = new CommandMoveRight(currentControlBlock);
+                    c.execute();
+                }
+                // rotate block
             }
-            // rotate block
         }
     }
 

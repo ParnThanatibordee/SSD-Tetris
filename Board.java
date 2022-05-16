@@ -45,7 +45,6 @@ public class Board {
         if (row < 0 || col < 0 || row >= width || col >= height) { return null; }
         return cells[row][col];
     }
-}
 
     public boolean blockFullFillRow(int col) {
         boolean filled = true;

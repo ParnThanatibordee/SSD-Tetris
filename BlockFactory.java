@@ -19,13 +19,14 @@ public class BlockFactory {
     }
 
     public void createBlock() {
-        queue.add(new Block(blockCatalog.get(random.nextInt(blockCatalog.size()))));
+        queue.add(new Block(x, y, blockCatalog.get(random.nextInt(blockCatalog.size()))));
     }
 
     public Block extractBlock() {
-        int popIndex = random.nextInt(queue.size());
-        Block popBlock = queue.get(popIndex);
-        queue.remove(popIndex);
+        Block popBlock = queue.get(0);
+        queue.remove(0);
+
+        createBlock();
 
         return popBlock;
     }
