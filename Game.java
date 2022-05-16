@@ -14,11 +14,13 @@ public class Game extends JFrame {
     private boolean gameOver;
 
     private Board board;
+    private BlockFactory blockFactory;
 
     public Game() {
         addKeyListener(new Controller());
 
-        Board board = new Board(boardSizeX, boardSizeY);
+        board = new Board(boardSizeX, boardSizeY);
+        blockFactory = new BlockFactory();
 
         gameOver = false;
         gridUi = new GridUi();

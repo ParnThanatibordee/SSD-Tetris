@@ -4,7 +4,7 @@ public class Board {
     private int boardSizeX;
     private int boardSizeY;
     private Cell [][] cells;  // cells[col][row]
-    ArrayList<Block> blocks = new ArrayList<Block>();
+    private ArrayList<Block> blocks = new ArrayList<Block>();
 
     public Board(int boardSizeX, int boardSizeY) {
         this.boardSizeX = boardSizeX;
