@@ -16,6 +16,8 @@ public class Game extends JFrame {
     private Board board;
 
     public Game() {
+        addKeyListener(new Controller());
+
         Board board = new Board(boardSizeX, boardSizeY);
 
         gameOver = false;
@@ -69,7 +71,19 @@ public class Game extends JFrame {
     class Controller extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-
+            // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
+            // currentControlBlock อาจจะเก็บใน game หรือ block factory
+            if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+                Command c = new CommandMoveDown(currentControlBlock);
+                c.execute();
+            } else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+                Command c = new CommandMoveLeft(currentControlBlock);
+                c.execute();
+            } else if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                Command c = new CommandMoveRight(currentControlBlock);
+                c.execute();
+            }
+            // rotate block
         }
     }
 
