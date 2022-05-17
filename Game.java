@@ -127,6 +127,14 @@ public class Game extends JFrame {
         return controller;
     }
 
+    public int getBoardSizeX() {
+        return boardSizeX;
+    }
+
+    public int getBoardSizeY() {
+        return boardSizeY;
+    }
+
     private boolean isGameOver() {
         return board.blockOverCeil();
     }
