@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-// create tertis board
+// create tetris board
 public class Board {
     private Cell[][] cells;
     private int width;
@@ -41,6 +41,9 @@ public class Board {
                 for (int row = 0; row < width; row++) {
                     cells[row][col].setCovered(false);
                 }
+                // change row to gray color
+                // เก็บสีในแต่ละ cell แทน เก็บใน block
+                // เก็บใน block ด้วยก็ได้
             }
         }
     }

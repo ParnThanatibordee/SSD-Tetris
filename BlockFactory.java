@@ -9,6 +9,7 @@ public class BlockFactory {
 
     public BlockFactory() {
         // apply object pool ได้
+        initBlockCatalog();
         initBlockQueue();
     }
 
@@ -16,6 +17,10 @@ public class BlockFactory {
         for (int i=0; i<initQueueInt; i++) {
             createBlock();
         }
+    }
+
+    public void initBlockCatalog() {
+
     }
 
     public void createBlock() {

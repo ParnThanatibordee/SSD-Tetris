@@ -3,10 +3,12 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Game extends JFrame {
+    // แก้เป็น JPanel
     private int boardSizeX = 10;
     private int boardSizeY = 15;
     private GridUi gridUi;
     private Thread thread;
+    private Controller controller;
     private long delayed = 200;
     private boolean gameOver;
 
@@ -17,7 +19,8 @@ public class Game extends JFrame {
     private Block currentControlBlock = null;
 
     public Game() {
-        //addKeyListener(new Controller());
+        controller = new Controller();
+        addKeyListener(controller);
 
         board = new Board(boardSizeX, boardSizeY);
         blockGenerate = new BlockGenerator();
@@ -25,6 +28,7 @@ public class Game extends JFrame {
         gameOver = false;
         gridUi = new GridUi();
         add(gridUi);
+        // ลบ pack กับ EXIT_ON_CLOSE ออก
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
@@ -135,6 +139,18 @@ public class Game extends JFrame {
         board.getBlocks().add(block);
 
         currentControlBlock = block;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public int getBoardSizeX() {
+        return boardSizeX;
+    }
+
+    public int getBoardSizeY() {
+        return boardSizeY;
     }
 
     private boolean isGameOver() {
