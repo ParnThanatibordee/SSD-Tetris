@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 
-// create tertis board
+// create tetris board
 public class Board {
     private Cell[][] cells;
     private int width;
@@ -36,7 +36,9 @@ public class Board {
     public void removeFullFillRow() {
         for (int col = 0; col < height; col++) {
             if (blockFullFillRow(col)) {
-                // remove block in that row
+                // change row to gray color
+                // เก็บสีในแต่ละ cell แทน เก็บใน block
+                // เก็บใน block ด้วยก็ได้
             }
         }
     }
