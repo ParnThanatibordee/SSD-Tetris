@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class Game extends JFrame {
     // แก้เป็น JPanel
@@ -14,7 +13,9 @@ public class Game extends JFrame {
     private boolean gameOver;
 
     private Board board;
-    private BlockFactory blockFactory;
+
+    private BlockGenerator blockGenerate;
+
     private Block currentControlBlock = null;
 
     public Game() {
@@ -22,7 +23,7 @@ public class Game extends JFrame {
         addKeyListener(controller);
 
         board = new Board(boardSizeX, boardSizeY);
-        blockFactory = new BlockFactory();
+        blockGenerate = new BlockGenerator();
 
         gameOver = false;
         gridUi = new GridUi();
@@ -38,6 +39,7 @@ public class Game extends JFrame {
         thread = new Thread() {
             @Override
             public void run() {
+                addBlock(0, 0);
                 while(!gameOver) {
                     // update
                     board.updateBoard();
@@ -46,6 +48,9 @@ public class Game extends JFrame {
                     // ถ้า currentControlBlock นิ่งแล้วให้ extract block มาใหม่
                     // แล้ว set currentControlBlock ใหม่
                     // รอเอาโค้ด Block fall
+                    if (!currentControlBlock.isStopFall()) {
+                        addBlock(0, 0);
+                    }
 
                     gameOver = isGameOver();
 
@@ -81,46 +86,59 @@ public class Game extends JFrame {
                     paintCell(g, i, j);
                     }
                 }
+            paintBlock(g);
+            paintFilledBlock(g);
             }
 
         private void paintCell(Graphics g, int row, int col) {
-            int x = col * CELL_PIXEL_SIZE;
-            int y = row * CELL_PIXEL_SIZE;
+            int x = row * CELL_PIXEL_SIZE;
+            int y = col * CELL_PIXEL_SIZE;
 
-            Cell cell = board.getCell(row, col);
+            g.setColor(Color.BLACK);
+            g.fillRect(x, y, CELL_PIXEL_SIZE, CELL_PIXEL_SIZE);
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(x + 1, y + 1,
+                    CELL_PIXEL_SIZE - 2, CELL_PIXEL_SIZE - 2);
+        }
 
-            if (cell.isCovered()) {
-                g.setColor(Color.BLACK);
-                g.fillRect(x, y, CELL_PIXEL_SIZE, CELL_PIXEL_SIZE);
-                g.setColor(Color.LIGHT_GRAY);
-                g.fillRect(x + 1, y + 1,
-                        CELL_PIXEL_SIZE - 2, CELL_PIXEL_SIZE - 2);
-            } else {
-                g.setColor(Color.WHITE);
-                g.fillRect(x, y, CELL_PIXEL_SIZE, CELL_PIXEL_SIZE);
+        private void paintBlock(Graphics g){
+            ArrayList<Block> blocks = board.getBlocks();
+            for (Block block: blocks) {
+                block.render(g);
             }
+        }
+
+        private void paintFilledBlock(Graphics g){
+
         }
     }
   
-    class Controller extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
-            // currentControlBlock อาจจะเก็บใน game หรือ block factory
-            if (currentControlBlock != null) {
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    Command c = new CommandMoveDown(currentControlBlock);
-                    c.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    Command c = new CommandMoveLeft(currentControlBlock);
-                    c.execute();
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    Command c = new CommandMoveRight(currentControlBlock);
-                    c.execute();
-                }
-                // rotate block
-            }
-        }
+    //class Controller extends KeyAdapter {
+    //    @Override
+    //    public void keyPressed(KeyEvent e) {
+    //        // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
+    //        // currentControlBlock อาจจะเก็บใน game หรือ block factory
+    //        if (currentControlBlock != null) {
+    //            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+    //                Command c = new CommandMoveDown(currentControlBlock);
+    //                c.execute();
+    //            } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+    //                Command c = new CommandMoveLeft(currentControlBlock);
+    //                c.execute();
+    //            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+    //                Command c = new CommandMoveRight(currentControlBlock);
+    //                c.execute();
+    //            }
+    //            // rotate block
+    //        }
+    //    }
+    //}
+
+    private void addBlock(int x, int y) {
+        Block block = blockGenerate.extractBlock(x, y);
+        board.getBlocks().add(block);
+
+        currentControlBlock = block;
     }
 
     public Controller getController() {

@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.ArrayList;
 
 // create tetris board
@@ -6,7 +5,10 @@ public class Board {
     private Cell[][] cells;
     private int width;
     private int height;
+
     private ArrayList<Block> blocks = new ArrayList<Block>();
+
+    private BlockShape currentShape;
 
     public Board(int width, int height) {
         this.width = width;
@@ -19,10 +21,10 @@ public class Board {
         for (int row = 0; row < width; row++) {
             for (int column = 0; column < height; column++) {
                 cells[row][column] = new Cell();
-              }
+            }
         }
     }
-  
+
     public boolean blockOverCeil() {
         Integer maxY = 0;
         for (int i = 0; i < blocks.size(); i++) {
@@ -36,6 +38,9 @@ public class Board {
     public void removeFullFillRow() {
         for (int col = 0; col < height; col++) {
             if (blockFullFillRow(col)) {
+                for (int row = 0; row < width; row++) {
+                    cells[row][col].setCovered(false);
+                }
                 // change row to gray color
                 // เก็บสีในแต่ละ cell แทน เก็บใน block
                 // เก็บใน block ด้วยก็ได้
@@ -43,8 +48,10 @@ public class Board {
         }
     }
 
-    public Cell getCell (int row, int col) {
-        if (row < 0 || col < 0 || row >= width || col >= height) { return null; }
+    public Cell getCell(int row, int col) {
+        if (row < 0 || col < 0 || row >= width || col >= height) {
+            return null;
+        }
         return cells[row][col];
     }
 
@@ -61,11 +68,20 @@ public class Board {
     public void updateBoard() {
         removeFullFillRow();
         blockFall();
-        // re-position of blocks
+        // re-position of block.
+    }
+
+    public ArrayList<Block> getBlocks(){
+        return blocks;
     }
 
     public void blockFall() {
-
+        for (Block block : blocks) {
+            if (block.getY() < height - 1) {
+                block.movedown();
+            }else {
+                block.setY(0);
+            }
+        }
     }
-
 }
