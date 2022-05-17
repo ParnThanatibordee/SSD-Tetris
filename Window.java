@@ -40,21 +40,19 @@ public class Window extends JFrame {
 
     private void initButtons() {
         singlePlayerGameButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-                // open single game board
+                SingleGameBoard singleGameBoard = new SingleGameBoard();
+                singleGameBoard.start();
             }
         });
         multiPlayerGameButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 // open multi game board
             }
         });
         exitGameButton.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
