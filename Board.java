@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.util.ArrayList;
 
 // create tertis board
@@ -7,8 +6,9 @@ public class Board {
     private int width;
     private int height;
 
-    private BlockShape currentShape;
     private ArrayList<Block> blocks = new ArrayList<Block>();
+
+    private BlockShape currentShape;
 
     public Board(int width, int height) {
         this.width = width;
@@ -38,7 +38,9 @@ public class Board {
     public void removeFullFillRow() {
         for (int col = 0; col < height; col++) {
             if (blockFullFillRow(col)) {
-                // remove block in that row
+                for (int row = 0; row < width; row++) {
+                    cells[row][col].setCovered(false);
+                }
             }
         }
     }
@@ -63,11 +65,20 @@ public class Board {
     public void updateBoard() {
         removeFullFillRow();
         blockFall();
-        // re-position of blocks
+        // re-position of block.
+    }
+
+    public ArrayList<Block> getBlocks(){
+        return blocks;
     }
 
     public void blockFall() {
-
+        for (Block block : blocks) {
+            if (block.getY() < height - 1) {
+                block.movedown();
+            }else {
+                block.setY(0);
+            }
+        }
     }
-
 }

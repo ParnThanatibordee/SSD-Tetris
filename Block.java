@@ -77,5 +77,10 @@ public class Block {
         this.y = 0;
     }
 
+    public boolean isStopFall() {
+        return stopFall;
+    }
+
+
 
 }

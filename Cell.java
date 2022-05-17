@@ -1,13 +1,10 @@
-import java.awt.*;
-
 public class Cell {
     private boolean covered;
-    private boolean blocked;
     private int blockColor;
 
     public Cell() {
-        covered = true;
-        blocked = false;
+        covered = false;
+
         blockColor = 0;
     }
     public boolean isCovered() {

@@ -1,31 +1,48 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 public class BlockGenerator {
     private static Random random = new Random();
 
+    private ArrayList<BlockShape> blockCatalog = new ArrayList<BlockShape>();
+
+    private ArrayList<Block> queue = new ArrayList<Block>();
+    private final int initQueueInt = 5;
+
     BlockGenerator() {
+        initBlockCatalog();
+        initBlockQueue();
     }
 
-    public static Block generateBlock(int x, int y) {
-        int type = random.nextInt(7);
-        if (type == 0) {
-            return new Block(x, y, new BlockShapeI());
-        } else if (type == 1) {
-            return new Block(x, y, new BlockShapeJ());
-        } else if (type == 2) {
-            return new Block(x, y, new BlockShapeL());
-        } else if (type == 3) {
-            return new Block(x, y, new BlockShapeO());
-        } else if (type == 4) {
-            return new Block(x, y, new BlockShapeS());
-        } else if (type == 5) {
-            return new Block(x, y, new BlockShapeT());
-        } else {
-            return new Block(x, y, new BlockShapeZ());
+    public void initBlockQueue() {
+        for (int i=0; i<initQueueInt; i++) {
+            createBlock();
         }
     }
 
-    public static Block generateBlock(){
-        return generateBlock(4, 0);
+    public void initBlockCatalog() {
+        blockCatalog.add(new BlockShapeI());
+        blockCatalog.add(new BlockShapeJ());
+        blockCatalog.add(new BlockShapeL());
+        blockCatalog.add(new BlockShapeO());
+        blockCatalog.add(new BlockShapeS());
+        blockCatalog.add(new BlockShapeT());
+        blockCatalog.add(new BlockShapeZ());
+    }
+
+    public void createBlock() {
+       queue.add(new Block(blockCatalog.get(random.nextInt(blockCatalog.size()))));
+    }
+
+    public Block extractBlock(int x, int y) {
+        Block popBlock = queue.get(0);
+        queue.remove(0);
+
+        createBlock();
+
+        popBlock.setX(x);
+        popBlock.setY(y);
+
+        return popBlock;
     }
 }
