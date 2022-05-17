@@ -29,12 +29,9 @@ public class GameFrame extends JPanel {
         titlePanel.add(new JLabel(title), BorderLayout.CENTER);
         gamePanel.add(game, BorderLayout.CENTER);
 
-        // StringBuilder queueText = new StringBuilder("{");
-        // for (Block blockQueue: game.getBlockFactory.getQueue()) {
-        //     queueText.append((String) blockQueue);
-        //     queueText.append((String) ",\n");
-        // }
-        // queuePanel.add(new JLabel(queueText.toString()), BorderLayout.CENTER);
+        Block nextBlock = game.getBlockGenerate().getQueue().get(0);
+        JLabel queueText = new JLabel("Next Block: " + nextBlock.toString());
+        queuePanel.add(queueText, BorderLayout.CENTER);
 
         add(titlePanel, BorderLayout.NORTH);
         add(gamePanel, BorderLayout.CENTER);

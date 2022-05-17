@@ -25,4 +25,9 @@ public class BlockShapeZ extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "Z Shape " + color.toString() + " Block";
+    }
 }

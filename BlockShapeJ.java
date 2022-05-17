@@ -39,4 +39,9 @@ public class BlockShapeJ extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "J Shape " + color.toString() + " Block";
+    }
 }

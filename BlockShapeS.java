@@ -27,4 +27,9 @@ public class BlockShapeS extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "S Shape " + color.toString() + " Block";
+    }
 }

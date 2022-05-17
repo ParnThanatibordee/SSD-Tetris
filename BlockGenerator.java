@@ -45,4 +45,8 @@ public class BlockGenerator {
 
         return popBlock;
     }
+
+    public ArrayList<Block> getQueue() {
+        return queue;
+    }
 }

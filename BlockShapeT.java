@@ -40,4 +40,9 @@ public class BlockShapeT extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "T Shape " + color.toString() + " Block";
+    }
 }

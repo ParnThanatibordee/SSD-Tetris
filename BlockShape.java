@@ -36,4 +36,8 @@ public abstract class BlockShape {
     public boolean isBlock(int i, int j){
         return block[i][j][0] == 1;
     }
+
+    public String toString() {
+        return "Unknown Block";
+    }
 }

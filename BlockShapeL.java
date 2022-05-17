@@ -37,4 +37,9 @@ public class BlockShapeL extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return "L Shape " + color.toString() + " Block";
+    }
 }

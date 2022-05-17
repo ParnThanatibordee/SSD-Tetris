@@ -84,4 +84,8 @@ class Block {
     public void setStopFall(boolean stopFall) {
         this.stopFall = stopFall;
     }
+
+    public String toString() {
+        return "" + shape;
+    }
 }

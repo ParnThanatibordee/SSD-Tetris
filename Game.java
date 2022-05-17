@@ -4,7 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class Game extends JFrame {
+public class Game extends JPanel {
     // แก้เป็น JPanel
     private int boardSizeX = 10;
     private int boardSizeY = 15;
@@ -31,8 +31,8 @@ public class Game extends JFrame {
         gridUi = new GridUi();
         add(gridUi);
         // ลบ pack กับ EXIT_ON_CLOSE ออก
-        pack();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // pack();
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     public void start() {
@@ -146,6 +146,10 @@ public class Game extends JFrame {
 
     public Controller getController() {
         return controller;
+    }
+
+    public BlockGenerator getBlockGenerate() {
+        return blockGenerate;
     }
 
     public int getBoardSizeX() {
