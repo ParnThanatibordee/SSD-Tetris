@@ -78,8 +78,11 @@ public class Board {
     public void blockFall() {
         for (Block block : blocks) {
             if (block.getY() < height - 1) {
-                block.movedown();
-            }else {
+                block.moveDown();
+                // if check collision:
+                //     block.setStopFall(true);
+                // แล้วก็ตอน move block blockต้องไม่ทะลุจอซ้ายขวาด้วย
+            } else {
                 block.setY(0);
             }
         }

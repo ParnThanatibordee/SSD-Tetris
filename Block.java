@@ -1,17 +1,17 @@
 import java.awt.*;
 
-public class Block {
+class Block {
 
     private static int CELL_SIZE = 30;
 
     private int x;
     private int y;
+    private boolean stopFall;
 
     private BlockShape shape;
 
-    public Block(int x, int y, BlockShape shape) {
-        this.setX(x);
-        this.setY(y);
+    public Block(BlockShape shape) {
+        stopFall = false;
         this.setShape(shape);
     }
 
@@ -57,18 +57,18 @@ public class Block {
     }
 
     public void tick() {
-        this.movedown();
+        this.moveDown();
     }
 
-    public void movedown() {
+    public void moveDown() {
         this.y++;
     }
 
-    public void moveleft() {
+    public void moveLeft() {
         this.x--;
     }
 
-    public void moveright() {
+    public void moveRight() {
         this.x++;
     }
 
@@ -81,6 +81,7 @@ public class Block {
         return stopFall;
     }
 
-
-
+    public void setStopFall(boolean stopFall) {
+        this.stopFall = stopFall;
+    }
 }

@@ -5,6 +5,6 @@ public class CommandMoveDown extends Command{
 
     @Override
     public void execute() {
-        getControlBlock().MoveDown();
+        getControlBlock().moveDown();
     }
 }
