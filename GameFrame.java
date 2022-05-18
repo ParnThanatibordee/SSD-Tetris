@@ -12,6 +12,8 @@ public class GameFrame extends JPanel {
 
     JLabel queueText = new JLabel();
 
+    MultiGameBoard onMultiGameBoard;
+
     public GameFrame(Game game) {
         this.game = game;
         this.controller = game.getController();
@@ -57,6 +59,10 @@ public class GameFrame extends JPanel {
         Block nextBlock = game.getBlockGenerate().getQueue().get(0);
         queueText.setText("Next Block: " + nextBlock.toString());
         repaint();
+    }
+
+    public void setOnMultiGameBoard(MultiGameBoard onMultiGameBoard) {
+        this.onMultiGameBoard = onMultiGameBoard;
     }
 
     public Game getGame() {

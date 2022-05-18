@@ -17,6 +17,8 @@ public class MultiGameBoard extends JFrame {
 
         game1 = new Game("Player 1", "MultiPlayer");
         gameFrame1 = new GameFrame(game1);
+        gameFrame1.setOnMultiGameBoard(this);
+
         add(gameFrame1, BorderLayout.WEST);
         addKeyListener(game1.getController());
         game1.start();
