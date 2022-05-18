@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-// create tetris board
+// create tertis board
 public class Board {
     private Cell[][] cells;
     private int width;
@@ -26,26 +26,13 @@ public class Board {
     }
 
     public boolean blockOverCeil() {
-        Integer maxY = 0;
+        Integer minY = height;
         for (int i = 0; i < blocks.size(); i++) {
-            if (maxY < blocks.get(i).getY())
-                maxY = blocks.get(i).getY();
+            if (minY > blocks.get(i).getY())
+                minY = blocks.get(i).getY();
         }
 
-        return maxY >= height - 1;
-    }
-
-    public void removeFullFillRow() {
-        for (int col = 0; col < height; col++) {
-            if (blockFullFillRow(col)) {
-                for (int row = 0; row < width; row++) {
-                    cells[row][col].setCovered(false);
-                }
-                // change row to gray color
-                // เก็บสีในแต่ละ cell แทน เก็บใน block
-                // เก็บใน block ด้วยก็ได้
-            }
-        }
+        return minY < 0;
     }
 
     public Cell getCell(int row, int col) {
@@ -66,33 +53,106 @@ public class Board {
     }
 
     public void updateBoard() {
-        removeFullFillRow();
         blockFall();
         // re-position of block.
     }
 
-    public ArrayList<Block> getBlocks(){
+    public ArrayList<Block> getBlocks() {
         return blocks;
-    }
-
-    public Cell[][] getCells() {
-        return cells;
-    }
-
-    public void setCells(Cell[][] cells) {
-        this.cells = cells;
     }
 
     public void blockFall() {
         for (Block block : blocks) {
-            if (block.getY() < height - 1) {
-                block.moveDown();
-                // if check collision:
-                //     block.setStopFall(true);
-                // แล้วก็ตอน move block blockต้องไม่ทะลุจอซ้ายขวาด้วย
-            } else {
-                block.setY(0);
+            if (!block.isStopFall()) {
+                if (block.getY() < height - block.getHeight()) {
+                    block.movedown();
+                }
+                if (collisionToBottom(block) || isHit(block)) {
+                    block.setStopFall(true);
+                    BlockShape shape = block.getShape();
+                    for (int i = 0; i < shape.getHeight(); i++) {
+                        for (int j = 0; j < shape.getWidth(); j++) {
+                            if (shape.isBlock(i, j)) {
+                                cells[block.getX() + j][block.getY() + i].setCovered(true);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+
+    public boolean collisionToBottom(Block block) {
+        //เช็ค block ชน พื่นไหม ถ้าชนก็return true
+        int blockY = block.getY();
+
+        int blockHeight = block.getHeight();
+
+        for (int i = 0; i < blockHeight; i++) {
+            if (blockY + i >= height - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean collisionToTop(Block block) {
+        //เช็ค block ชน ผนังไหม ถ้าชนก็return true
+        int blockY = block.getY();
+
+        int blockHeight = block.getHeight();
+
+        for (int i = 0; i < blockHeight; i++) {
+            if (blockY + i < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean collisionToRight(Block block) {
+        int blockX = block.getX();
+        int blockWidth = block.getWidth();
+        for (int i = 0; i < blockWidth; i++) {
+            if (blockX + i >= width - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean collisiontoLeft(Block block) {
+        int blockX = block.getX();
+        int blockWidth = block.getWidth();
+        for (int i = 0; i < blockWidth; i++) {
+            if (blockX + i <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public boolean isHit(Block block) {
+        BlockShape shape = block.getShape();
+        for (int i = 0; i < block.getHeight(); i++) {
+            for (int j = 0; j < block.getWidth(); j++) {
+                if(shape.isBlock(i,j)){
+                    if(cells[block.getX()+j][block.getY()+i+1].isCovered() || cells[block.getX()+j][block.getY()+i].isCovered()){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }

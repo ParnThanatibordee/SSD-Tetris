@@ -1,7 +1,8 @@
 import java.awt.*;
 
 public abstract class BlockShape {
-    protected int[][][] block;
+
+    public int[][] block;
     private int currentShape;
     private Color color;
 
@@ -33,11 +34,9 @@ public abstract class BlockShape {
         return block.length;
     }
 
-    public boolean isBlock(int i, int j){
-        return block[i][j][0] == 1;
+    public boolean isBlock(int x, int y) {
+        return block[x][y] == 1;
     }
 
-    public String toString() {
-        return "Unknown Block";
-    }
+
 }
