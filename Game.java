@@ -15,6 +15,7 @@ public class Game extends JPanel{
     private Controller controller;
     private long delayed = 200;
     private boolean gameOver;
+    private String gameMode;
 
     GameFrame frameObserver;
 
@@ -24,8 +25,9 @@ public class Game extends JPanel{
 
     private Block currentControlBlock = null;
 
-    public Game(String title) {
+    public Game(String title, String gameMode) {
         this.title = title;
+        this.gameMode = gameMode;
 
         controller = new Controller();
         addKeyListener(controller);
@@ -186,7 +188,7 @@ public class Game extends JPanel{
     }
 
     public static void main(String[] args) {
-        Game game = new Game("Player 1");
+        Game game = new Game("Player 1", "SinglePlayer");
         game.start();
     }
 }

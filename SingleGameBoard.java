@@ -14,7 +14,7 @@ public class SingleGameBoard extends JFrame {
         setPreferredSize(new Dimension(gameBoardSizeX, gameBoardSizeY));
         setLayout(new BorderLayout());
 
-        game = new Game("Player 1");
+        game = new Game("Player 1", "SinglePlayer");
         gameFrame = new GameFrame(game);
         add(gameFrame, BorderLayout.CENTER);
         addKeyListener(game.getController());
