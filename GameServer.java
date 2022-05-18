@@ -87,7 +87,7 @@ public class GameServer extends JFrame{
 
     private void initGui() {
         setTitle("Server Screen");
-        setAlwaysOnTop(true);
+        // setAlwaysOnTop(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         screen = new JTextArea();
         screen.setPreferredSize(new Dimension(480, 480));
