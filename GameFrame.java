@@ -65,6 +65,10 @@ public class GameFrame extends JPanel {
         this.onMultiGameBoard = onMultiGameBoard;
     }
 
+    public MultiGameBoard getOnMultiGameBoard() {
+        return onMultiGameBoard;
+    }
+
     public Game getGame() {
         return game;
     }

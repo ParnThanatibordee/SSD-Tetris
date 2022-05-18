@@ -1,11 +1,20 @@
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Game extends JPanel{
+    public static final int PORT = 5455;
+    public static final String IP = "127.0.0.1";
+    private Client client;
     // แก้เป็น JPanel
     private String title;
     private int boardSizeX = 10;
@@ -26,6 +35,24 @@ public class Game extends JPanel{
     private Block currentControlBlock = null;
 
     public Game(String title, String gameMode) {
+        if (Objects.equals(gameMode, "MultiPlayer")) {
+            client = new Client();
+            client.getKryo().register(BoardMessage.class);
+            client.getKryo().register(Cell.class);
+            client.getKryo().register(Block.class);
+            client.getKryo().register(EventMessage.class);
+            client.addListener(new Listener() {
+                @Override
+                public void received(Connection connection, Object object) {
+                    super.received(connection, object);
+                    if (object instanceof BoardMessage) {
+                        // ส่งไปให้ gameBoard
+                    }
+                }
+            });
+        }
+
+
         this.title = title;
         this.gameMode = gameMode;
 
@@ -44,16 +71,36 @@ public class Game extends JPanel{
     }
 
     public void start() {
+        if (Objects.equals(gameMode, "MultiPlayer")) {
+            client.start();
+            try {
+                client.connect(5000, IP, PORT);
+            } catch (IOException e) {
+                System.out.println("Cannot connect to the server!");
+            }
+        }
         setVisible(true);
 
         thread = new Thread() {
             @Override
             public void run() {
+                if (Objects.equals(gameMode, "MultiPlayer")) {
+                    // เริ่มเกม
+                }
                 addBlock(0, 0);
                 while(!gameOver) {
                     // update
                     board.updateBoard();
                     gridUi.repaint();
+                    // ส่งอัพเดทไป server
+                    if (Objects.equals(gameMode, "MultiPlayer")) {
+                        BoardMessage boardMessage = new BoardMessage();
+                        boardMessage.senderTitle = title;
+                        boardMessage.cells = board.getCells();
+                        boardMessage.nextBlock = blockGenerate.getQueue().get(0);
+                        client.sendTCP(boardMessage);
+                    }
+
                     // game logic
                     // ถ้า currentControlBlock นิ่งแล้วให้ extract block มาใหม่
                     // แล้ว set currentControlBlock ใหม่
@@ -68,6 +115,9 @@ public class Game extends JPanel{
                     waitFor(delayed);
                 }
                 // after finish game
+                if (Objects.equals(gameMode, "MultiPlayer")) {
+                    // send event ว่า game over
+                }
             }
         };
         thread.start();
@@ -181,6 +231,10 @@ public class Game extends JPanel{
 
     public void setFrameObserver(GameFrame frameObserver) {
         this.frameObserver = frameObserver;
+    }
+
+    public GameFrame getFrameObserver() {
+        return frameObserver;
     }
 
     public void notifyFrameObserver() {
