@@ -19,9 +19,6 @@ public class GameListener extends Game{
         gameOver = false;
         board = new Board(boardSizeX, boardSizeY);
         gridUi = new Game.GridUi();
-        // listener
-        // board.updateCells();
-        // change gameover
     }
 
     @Override

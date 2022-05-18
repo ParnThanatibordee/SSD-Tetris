@@ -15,7 +15,7 @@ public class Game extends JPanel{
     public static final int PORT = 5455;
     public static final String IP = "127.0.0.1";
     private Client client;
-    // แก้เป็น JPanel
+
     private String title;
     private int boardSizeX = 10;
     private int boardSizeY = 15;
@@ -65,9 +65,6 @@ public class Game extends JPanel{
         gameOver = false;
         gridUi = new GridUi();
         add(gridUi);
-        // ลบ pack กับ EXIT_ON_CLOSE ออก
-        // pack();
-        // setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     public void start() {
@@ -95,7 +92,7 @@ public class Game extends JPanel{
                     // update
                     board.updateBoard();
                     gridUi.repaint();
-                    // ส่งอัพเดทไป server
+                    // send update to server
                     if (Objects.equals(gameMode, "MultiPlayer")) {
                         BoardMessage boardMessage = new BoardMessage();
                         boardMessage.senderTitle = title;
@@ -105,9 +102,6 @@ public class Game extends JPanel{
                     }
 
                     // game logic
-                    // ถ้า currentControlBlock นิ่งแล้วให้ extract block มาใหม่
-                    // แล้ว set currentControlBlock ใหม่
-                    // รอเอาโค้ด Block fall
                     if (currentControlBlock.isStopFall()) {
                         addBlock(0, 0);
                         notifyFrameObserver();
@@ -123,9 +117,6 @@ public class Game extends JPanel{
                     eventMessage.senderTitle = title;
                     eventMessage.actionText = "game over";
                     client.sendTCP(eventMessage);
-
-                    // ให้ multi game board หยุดทำงานแล้วขึ้น game over
-                    // อีกคน win
                 }
             }
         };
@@ -203,8 +194,6 @@ public class Game extends JPanel{
     class Controller extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            // ใน control block (block) ต้องมีเช็คด้วยว่าถูก control อยู่รึเปล่า
-            // currentControlBlock อาจจะเก็บใน game หรือ block factory
             if (currentControlBlock != null) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     if (!board.collisionToBottom(currentControlBlock)) {
@@ -222,7 +211,6 @@ public class Game extends JPanel{
                         Command c = new CommandMoveRight(currentControlBlock);
                         c.execute();
                     }
-                    // rotate block
                 }
             }
         }

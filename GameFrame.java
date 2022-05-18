@@ -20,9 +20,6 @@ public class GameFrame extends JPanel {
 
         this.game.setFrameObserver(this);
 
-        // setPreferredSize(new Dimension(game.getBoardSizeX(), game.getBoardSizeY()));
-        // setBackground(Color.GREEN);
-
         setLayout(new BorderLayout());
         titlePanel.setLayout(new BorderLayout());
         gamePanel.setLayout(new BorderLayout());
@@ -45,12 +42,10 @@ public class GameFrame extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        // paintFrame(g);
     }
 
     public void paintFrame(Graphics g) {
         g.setColor(Color.BLUE);
-        //System.out.println(gamePanel.getX() + ", " + gamePanel.getY());
         g.fillRect(gamePanel.getX()-10, gamePanel.getY()-10, game.getBoardSizeX() * Game.GridUi.CELL_PIXEL_SIZE + 10,
                 game.getBoardSizeY() * Game.GridUi.CELL_PIXEL_SIZE + 10);
     }

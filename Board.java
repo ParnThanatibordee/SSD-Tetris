@@ -54,7 +54,6 @@ public class Board {
 
     public void updateBoard() {
         blockFall();
-        // re-position of block.
     }
 
     public ArrayList<Block> getBlocks() {
@@ -83,7 +82,6 @@ public class Board {
     }
 
     public boolean collisionToBottom(Block block) {
-        //เช็ค block ชน พื่นไหม ถ้าชนก็return true
         int blockY = block.getY();
 
         int blockHeight = block.getHeight();
@@ -97,7 +95,6 @@ public class Board {
     }
 
     public boolean collisionToTop(Block block) {
-        //เช็ค block ชน ผนังไหม ถ้าชนก็return true
         int blockY = block.getY();
 
         int blockHeight = block.getHeight();
