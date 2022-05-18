@@ -248,7 +248,7 @@ public class Game extends JPanel{
     }
 
     private boolean isGameOver() {
-        return board.blockOverCeil();
+        return board.collisionToTop(currentControlBlock);
     }
 
     public void setFrameObserver(GameFrame frameObserver) {
