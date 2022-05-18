@@ -13,28 +13,53 @@ public class GameServer extends JFrame{
     private Server server;
     private JTextArea screen;
     private int clientConnection = 0;
+    private final int maxClientConnection = 2;
+    private int player1;
+    private int player2;
 
     public GameServer() {
         server = new Server();
-        List<BoardMessage> messageHistory = new ArrayList<BoardMessage>();
 
         server.getKryo().register(BoardMessage.class);
+        server.getKryo().register(Cell.class);
+        server.getKryo().register(Block.class);
         server.addListener(new Listener(){
             @Override
             public void received(Connection connection, Object object) {
-                //
+                super.received(connection, object);
+                if (object instanceof BoardMessage) {
+                    BoardMessage boardMessage = (BoardMessage) object;
+
+                    if (connection.getID() == player1) {
+                        server.sendToTCP(player2, boardMessage);
+                    } else if (connection.getID() == player2) {
+                        server.sendToTCP(player1, boardMessage);
+                    }
+                }
             }
 
             @Override
             public void connected(Connection connection) {
-                //
+                super.connected(connection);
+                screen.append("New client connected.\n");
                 clientConnection += 1;
+                if (clientConnection == 1) {
+                    player1 = connection.getID();
+                } else if (clientConnection == 2) {
+                    player2 = connection.getID();
+                }
             }
 
             @Override
             public void disconnected(Connection connection) {
-                //
+                super.disconnected(connection);
+                screen.append("Client disconnected.\n");
                 clientConnection -= 1;
+                if (connection.getID() == player1) {
+                    player1 = 0;
+                } else if (connection.getID() == player2) {
+                    player2 = 0;
+                }
             }
         });
         initGui();
@@ -67,7 +92,7 @@ public class GameServer extends JFrame{
     }
 
     public static void main(String[] args) {
-        GameSever gameSever = new GameSever();
-        gameSever.start();
+        GameServer gameServer = new GameServer();
+        gameServer.start();
     }
 }
