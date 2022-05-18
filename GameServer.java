@@ -33,6 +33,7 @@ public class GameServer extends JFrame{
 
                     if (connection.getID() == player1) {
                         server.sendToTCP(player2, boardMessage);
+                        // ส่งไปให้ board ของ player2 ด้วย (maybe)
                     } else if (connection.getID() == player2) {
                         server.sendToTCP(player1, boardMessage);
                     }

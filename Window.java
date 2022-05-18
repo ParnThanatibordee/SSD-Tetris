@@ -49,7 +49,8 @@ public class Window extends JFrame {
         multiPlayerGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // open multi game board
+                MultiGameBoard multiGameBoard = new MultiGameBoard();
+                multiGameBoard.start();
             }
         });
         exitGameButton.addActionListener(new ActionListener() {
