@@ -4,19 +4,8 @@ public class BlockShapeI extends BlockShape {
     private Color color = Color.RED;
     public BlockShapeI() {
         super();
-        this.block = new int[][][]{
-                {
-                        {0, 1, 0, 0},
-                        {0, 1, 0, 0},
-                        {0, 1, 0, 0},
-                        {0, 1, 0, 0}
-                },
-                {
-                        {0, 0, 0, 0},
-                        {1, 1, 1, 1},
-                        {0, 0, 0, 0},
-                        {0, 0, 0, 0}
-                }
+        this.block = new int[][]{
+                {1,1,1,1},
         };
     }
 
@@ -25,8 +14,4 @@ public class BlockShapeI extends BlockShape {
         return color;
     }
 
-    @Override
-    public String toString() {
-        return "I Shape " + color.toString() + " Block";
-    }
 }

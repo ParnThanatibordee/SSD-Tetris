@@ -4,9 +4,10 @@ public class Cell {
 
     public Cell() {
         covered = false;
-
         blockColor = 0;
     }
+
+
     public boolean isCovered() {
         return covered;
     }

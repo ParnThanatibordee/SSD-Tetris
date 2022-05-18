@@ -5,6 +5,6 @@ public class CommandMoveRight extends Command{
 
     @Override
     public void execute() {
-        getControlBlock().moveRight();
+        getControlBlock().moveright();
     }
 }

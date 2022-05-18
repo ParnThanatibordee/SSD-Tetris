@@ -1,8 +1,8 @@
 import java.awt.*;
 
-class Block {
+public class Block {
 
-    private static int CELL_SIZE = 30;
+    public static int CELL_SIZE = 30;
 
     private int x;
     private int y;
@@ -11,25 +11,8 @@ class Block {
     private BlockShape shape;
 
     public Block(BlockShape shape) {
-        stopFall = false;
         this.setShape(shape);
-    }
-
-    public void render(Graphics g) {
-        BlockShape shape = this.shape;
-        for (int i = 0; i < shape.getHeight(); i++) {
-            for (int j = 0; j < shape.getWidth(); j++) {
-                if (shape.isBlock(i, j)) {
-                    int xPos = (this.x + j) * CELL_SIZE;
-                    int yPos = (this.y + i) * CELL_SIZE;
-
-                    g.setColor(shape.getColor());
-                    g.fillRect(xPos, yPos, CELL_SIZE, CELL_SIZE);
-                    g.setColor(Color.WHITE);
-                    g.drawRect(xPos, yPos, CELL_SIZE, CELL_SIZE);
-                }
-            }
-        }
+        this.stopFall = false;
     }
 
     public int getX() {
@@ -56,25 +39,16 @@ class Block {
         this.y = y;
     }
 
-    public void tick() {
-        this.moveDown();
-    }
-
-    public void moveDown() {
+    public void movedown() {
         this.y++;
     }
 
-    public void moveLeft() {
+    public void moveleft() {
         this.x--;
     }
 
-    public void moveRight() {
+    public void moveright() {
         this.x++;
-    }
-
-    public void moveBlocktostart() {
-        this.x = 4;
-        this.y = 0;
     }
 
     public boolean isStopFall() {
@@ -85,7 +59,12 @@ class Block {
         this.stopFall = stopFall;
     }
 
-    public String toString() {
-        return "" + shape;
+    public int getHeight() {
+        return this.shape.getHeight();
     }
+
+    public int getWidth() {
+        return this.shape.getWidth();
+    }
+
 }
