@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Game extends JPanel {
     // แก้เป็น JPanel
+    private String title;
     private int boardSizeX = 10;
     private int boardSizeY = 15;
     private GridUi gridUi;
@@ -20,7 +21,9 @@ public class Game extends JPanel {
 
     private Block currentControlBlock = null;
 
-    public Game() {
+    public Game(String title) {
+        this.title = title;
+
         controller = new Controller();
         addKeyListener(controller);
 
@@ -126,9 +129,11 @@ public class Game extends JPanel {
                     Command c = new CommandMoveDown(currentControlBlock);
                     c.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    // check collision wall
                     Command c = new CommandMoveLeft(currentControlBlock);
                     c.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    // check collision wall
                     Command c = new CommandMoveRight(currentControlBlock);
                     c.execute();
                 }
@@ -142,6 +147,10 @@ public class Game extends JPanel {
         board.getBlocks().add(block);
 
         currentControlBlock = block;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public Controller getController() {
@@ -165,7 +174,7 @@ public class Game extends JPanel {
     }
 
     public static void main(String[] args) {
-        Game game = new Game();
+        Game game = new Game("Player 1");
         game.start();
     }
 }
