@@ -23,6 +23,7 @@ public class GameServer extends JFrame{
         server.getKryo().register(BoardMessage.class);
         server.getKryo().register(Cell.class);
         server.getKryo().register(Block.class);
+        server.getKryo().register(EventMessage.class);
         server.addListener(new Listener(){
             @Override
             public void received(Connection connection, Object object) {
@@ -35,6 +36,9 @@ public class GameServer extends JFrame{
                     } else if (connection.getID() == player2) {
                         server.sendToTCP(player1, boardMessage);
                     }
+                } else if (object instanceof EventMessage) {
+                    EventMessage eventMessage = (EventMessage) object;
+                    screen.append(eventMessage.senderTitle + " : " + eventMessage.actionText);
                 }
             }
 
