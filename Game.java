@@ -1,18 +1,32 @@
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-public class Game extends JFrame {
+public class Game extends JPanel{
+    public static final int PORT = 5455;
+    public static final String IP = "127.0.0.1";
+    private Client client;
+    // แก้เป็น JPanel
+    private String title;
     private int boardSizeX = 10;
-    private int boardSizeY = 20;
+    private int boardSizeY = 15;
     private GridUi gridUi;
     private Thread thread;
+    private Controller controller;
     private long delayed = 200;
     private boolean gameOver;
+    private String gameMode;
 
-    private Controller controller;
+    GameFrame frameObserver;
 
     private Board board;
 
@@ -20,8 +34,30 @@ public class Game extends JFrame {
 
     private Block currentControlBlock = null;
 
-    public Game() {
-        addKeyListener(new Controller());
+    public Game(String title, String gameMode) {
+        if (Objects.equals(gameMode, "MultiPlayer")) {
+            client = new Client();
+            client.getKryo().register(BoardMessage.class);
+            client.getKryo().register(Cell.class);
+            client.getKryo().register(Block.class);
+            client.getKryo().register(EventMessage.class);
+            client.addListener(new Listener() {
+                @Override
+                public void received(Connection connection, Object object) {
+                    super.received(connection, object);
+                    if (object instanceof BoardMessage) {
+                        frameObserver.getOnMultiGameBoard().setCells(((BoardMessage) object).cells);
+                    }
+                }
+            });
+        }
+
+
+        this.title = title;
+        this.gameMode = gameMode;
+
+        controller = new Controller();
+        addKeyListener(controller);
 
         board = new Board(boardSizeX, boardSizeY);
         blockGenerate = new BlockGenerator();
@@ -29,29 +65,52 @@ public class Game extends JFrame {
         gameOver = false;
         gridUi = new GridUi();
         add(gridUi);
-        pack();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // ลบ pack กับ EXIT_ON_CLOSE ออก
+        // pack();
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     public void start() {
+        if (Objects.equals(gameMode, "MultiPlayer")) {
+            client.start();
+            try {
+                client.connect(5000, IP, PORT);
+            } catch (IOException e) {
+                System.out.println("Cannot connect to the server!");
+            }
+        }
         setVisible(true);
 
         thread = new Thread() {
             @Override
             public void run() {
-                addBlock(5, 0);
-                while (!gameOver) {
+                if (Objects.equals(gameMode, "MultiPlayer")) {
+                    EventMessage eventMessage = new EventMessage();
+                    eventMessage.senderTitle = title;
+                    eventMessage.actionText = "start the game";
+                    client.sendTCP(eventMessage);
+                }
+                addBlock(0, 0);
+                while(!gameOver) {
                     // update
                     board.updateBoard();
-                    System.out.println(currentControlBlock.isStopFall());
                     gridUi.repaint();
+                    // ส่งอัพเดทไป server
+                    if (Objects.equals(gameMode, "MultiPlayer")) {
+                        BoardMessage boardMessage = new BoardMessage();
+                        boardMessage.senderTitle = title;
+                        boardMessage.cells = board.getCells();
+                        boardMessage.nextBlock = blockGenerate.getQueue().get(0);
+                        client.sendTCP(boardMessage);
+                    }
+
                     // game logic
                     // ถ้า currentControlBlock นิ่งแล้วให้ extract block มาใหม่
                     // แล้ว set currentControlBlock ใหม่
                     // รอเอาโค้ด Block fall
                     if (currentControlBlock.isStopFall()) {
-                        addBlock(5, 0);
-
+                        addBlock(0, 0);
+                        notifyFrameObserver();
                     }
 
                     gameOver = isGameOver();
@@ -59,11 +118,19 @@ public class Game extends JFrame {
                     waitFor(delayed);
                 }
                 // after finish game
+                if (Objects.equals(gameMode, "MultiPlayer")) {
+                    EventMessage eventMessage = new EventMessage();
+                    eventMessage.senderTitle = title;
+                    eventMessage.actionText = "game over";
+                    client.sendTCP(eventMessage);
+
+                    // ให้ multi game board หยุดทำงานแล้วขึ้น game over
+                    // อีกคน win
+                }
             }
         };
         thread.start();
     }
-
 
     private void waitFor(long delayed) {
         try {
@@ -110,14 +177,14 @@ public class Game extends JFrame {
                 BlockShape shape = block.getShape();
                 for (int i = 0; i < shape.getHeight(); i++) {
                     for (int j = 0; j < shape.getWidth(); j++) {
-                            if (shape.isBlock(i, j)) {
-                                int xPos = (block.getX() + j) * Block.CELL_SIZE;
-                                int yPos = (block.getY() + i) * Block.CELL_SIZE;
+                        if (shape.isBlock(i, j)) {
+                            int xPos = (block.getX() + j) * Block.CELL_SIZE;
+                            int yPos = (block.getY() + i) * Block.CELL_SIZE;
 
-                                g.setColor(shape.getColor());
-                                g.fillRect(xPos, yPos, Block.CELL_SIZE, Block.CELL_SIZE);
-                                g.setColor(Color.WHITE);
-                                g.drawRect(xPos, yPos, Block.CELL_SIZE, Block.CELL_SIZE);}
+                            g.setColor(shape.getColor());
+                            g.fillRect(xPos, yPos, Block.CELL_SIZE, Block.CELL_SIZE);
+                            g.setColor(Color.WHITE);
+                            g.drawRect(xPos, yPos, Block.CELL_SIZE, Block.CELL_SIZE);}
                     }
                 }
             }
@@ -150,7 +217,7 @@ public class Game extends JFrame {
                         c.execute();
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        // check collision wall
+                    // check collision wall
                     if (!board.collisionToRight(currentControlBlock)) {
                         Command c = new CommandMoveRight(currentControlBlock);
                         c.execute();
@@ -161,35 +228,55 @@ public class Game extends JFrame {
         }
     }
 
+    private void addBlock(int x, int y) {
+        Block block = blockGenerate.extractBlock(x, y);
+        board.getBlocks().add(block);
 
-        private void addBlock(int x, int y) {
-            Block block = blockGenerate.extractBlock(x, y);
-            board.getBlocks().add(block);
-
-            currentControlBlock = block;
-        }
-
-        public Controller getController() {
-            return controller;
-        }
-
-        public BlockGenerator getBlockGenerate() {
-            return blockGenerate;
-        }
-
-        public int getBoardSizeX() {
-            return boardSizeX;
-        }
-
-        public int getBoardSizeY() {
-            return boardSizeY;
-        }
-
-        private boolean isGameOver() {
-            return board.collisionToTop(currentControlBlock);
-        }
-        public static void main(String[] args) {
-            Game game = new Game();
-            game.start();
-        }
+        currentControlBlock = block;
     }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Controller getController() {
+        return controller;
+    }
+
+    public BlockGenerator getBlockGenerate() {
+        return blockGenerate;
+    }
+
+    public int getBoardSizeX() {
+        return boardSizeX;
+    }
+
+    public int getBoardSizeY() {
+        return boardSizeY;
+    }
+
+    private boolean isGameOver() {
+        return board.blockOverCeil();
+    }
+
+    public void setFrameObserver(GameFrame frameObserver) {
+        this.frameObserver = frameObserver;
+    }
+
+    public GameFrame getFrameObserver() {
+        return frameObserver;
+    }
+
+    public void notifyFrameObserver() {
+        frameObserver.update();
+    }
+
+    public static void main(String[] args) {
+        Game game = new Game("Player 1", "SinglePlayer");
+        game.start();
+    }
+}

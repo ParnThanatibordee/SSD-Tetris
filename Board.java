@@ -141,6 +141,10 @@ public class Board {
         return width;
     }
 
+    public void setCells(Cell[][] cells) {
+        this.cells = cells;
+    }
+
     public boolean isHit(Block block) {
         BlockShape shape = block.getShape();
         for (int i = 0; i < block.getHeight(); i++) {
@@ -153,6 +157,10 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public Cell[][] getCells() {
+        return cells;
     }
 
 }
