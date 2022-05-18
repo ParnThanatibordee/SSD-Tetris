@@ -14,13 +14,13 @@ public class SingleGameBoard extends JFrame {
         setPreferredSize(new Dimension(gameBoardSizeX, gameBoardSizeY));
         setLayout(new BorderLayout());
 
-        game = new Game();
-        gameFrame = new GameFrame("Player 1", game);
+        game = new Game("Player 1", "SinglePlayer");
+        gameFrame = new GameFrame(game);
         add(gameFrame, BorderLayout.CENTER);
         addKeyListener(game.getController());
         game.start();
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         pack();
     }

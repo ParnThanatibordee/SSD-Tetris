@@ -1,11 +1,22 @@
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-public class Game extends JPanel {
+public class Game extends JPanel{
+    public static final int PORT = 5455;
+    public static final String IP = "127.0.0.1";
+    private Client client;
     // แก้เป็น JPanel
+    private String title;
     private int boardSizeX = 10;
     private int boardSizeY = 15;
     private GridUi gridUi;
@@ -13,6 +24,9 @@ public class Game extends JPanel {
     private Controller controller;
     private long delayed = 200;
     private boolean gameOver;
+    private String gameMode;
+
+    GameFrame frameObserver;
 
     private Board board;
 
@@ -20,7 +34,28 @@ public class Game extends JPanel {
 
     private Block currentControlBlock = null;
 
-    public Game() {
+    public Game(String title, String gameMode) {
+        if (Objects.equals(gameMode, "MultiPlayer")) {
+            client = new Client();
+            client.getKryo().register(BoardMessage.class);
+            client.getKryo().register(Cell.class);
+            client.getKryo().register(Block.class);
+            client.getKryo().register(EventMessage.class);
+            client.addListener(new Listener() {
+                @Override
+                public void received(Connection connection, Object object) {
+                    super.received(connection, object);
+                    if (object instanceof BoardMessage) {
+                        frameObserver.getOnMultiGameBoard().setCells(((BoardMessage) object).cells);
+                    }
+                }
+            });
+        }
+
+
+        this.title = title;
+        this.gameMode = gameMode;
+
         controller = new Controller();
         addKeyListener(controller);
 
@@ -36,22 +71,46 @@ public class Game extends JPanel {
     }
 
     public void start() {
+        if (Objects.equals(gameMode, "MultiPlayer")) {
+            client.start();
+            try {
+                client.connect(5000, IP, PORT);
+            } catch (IOException e) {
+                System.out.println("Cannot connect to the server!");
+            }
+        }
         setVisible(true);
 
         thread = new Thread() {
             @Override
             public void run() {
+                if (Objects.equals(gameMode, "MultiPlayer")) {
+                    EventMessage eventMessage = new EventMessage();
+                    eventMessage.senderTitle = title;
+                    eventMessage.actionText = "start the game";
+                    client.sendTCP(eventMessage);
+                }
                 addBlock(0, 0);
                 while(!gameOver) {
                     // update
                     board.updateBoard();
                     gridUi.repaint();
+                    // ส่งอัพเดทไป server
+                    if (Objects.equals(gameMode, "MultiPlayer")) {
+                        BoardMessage boardMessage = new BoardMessage();
+                        boardMessage.senderTitle = title;
+                        boardMessage.cells = board.getCells();
+                        boardMessage.nextBlock = blockGenerate.getQueue().get(0);
+                        client.sendTCP(boardMessage);
+                    }
+
                     // game logic
                     // ถ้า currentControlBlock นิ่งแล้วให้ extract block มาใหม่
                     // แล้ว set currentControlBlock ใหม่
                     // รอเอาโค้ด Block fall
                     if (currentControlBlock.isStopFall()) {
                         addBlock(0, 0);
+                        notifyFrameObserver();
                     }
 
                     gameOver = isGameOver();
@@ -59,6 +118,15 @@ public class Game extends JPanel {
                     waitFor(delayed);
                 }
                 // after finish game
+                if (Objects.equals(gameMode, "MultiPlayer")) {
+                    EventMessage eventMessage = new EventMessage();
+                    eventMessage.senderTitle = title;
+                    eventMessage.actionText = "game over";
+                    client.sendTCP(eventMessage);
+
+                    // ให้ multi game board หยุดทำงานแล้วขึ้น game over
+                    // อีกคน win
+                }
             }
         };
         thread.start();
@@ -122,13 +190,14 @@ public class Game extends JPanel {
             // currentControlBlock อาจจะเก็บใน game หรือ block factory
             if (currentControlBlock != null) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    System.out.println("*");
                     Command c = new CommandMoveDown(currentControlBlock);
                     c.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    // check collision wall
                     Command c = new CommandMoveLeft(currentControlBlock);
                     c.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    // check collision wall
                     Command c = new CommandMoveRight(currentControlBlock);
                     c.execute();
                 }
@@ -142,6 +211,14 @@ public class Game extends JPanel {
         board.getBlocks().add(block);
 
         currentControlBlock = block;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public Controller getController() {
@@ -164,8 +241,20 @@ public class Game extends JPanel {
         return board.blockOverCeil();
     }
 
+    public void setFrameObserver(GameFrame frameObserver) {
+        this.frameObserver = frameObserver;
+    }
+
+    public GameFrame getFrameObserver() {
+        return frameObserver;
+    }
+
+    public void notifyFrameObserver() {
+        frameObserver.update();
+    }
+
     public static void main(String[] args) {
-        Game game = new Game();
+        Game game = new Game("Player 1", "SinglePlayer");
         game.start();
     }
 }

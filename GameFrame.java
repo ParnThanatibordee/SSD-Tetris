@@ -3,7 +3,6 @@ import java.awt.*;
 
 public class GameFrame extends JPanel {
 
-    private String title;
     private Game game;
     private Game.Controller controller;
 
@@ -11,10 +10,15 @@ public class GameFrame extends JPanel {
     private JPanel gamePanel = new JPanel();
     private JPanel queuePanel = new JPanel();
 
-    public GameFrame(String title, Game game) {
-        this.title = title;
+    JLabel queueText = new JLabel();
+
+    MultiGameBoard onMultiGameBoard;
+
+    public GameFrame(Game game) {
         this.game = game;
         this.controller = game.getController();
+
+        this.game.setFrameObserver(this);
 
         // setPreferredSize(new Dimension(game.getBoardSizeX(), game.getBoardSizeY()));
         // setBackground(Color.GREEN);
@@ -26,11 +30,11 @@ public class GameFrame extends JPanel {
 
         repaint();
 
-        titlePanel.add(new JLabel(title), BorderLayout.CENTER);
+        titlePanel.add(new JLabel(game.getTitle()), BorderLayout.CENTER);
         gamePanel.add(game, BorderLayout.CENTER);
 
         Block nextBlock = game.getBlockGenerate().getQueue().get(0);
-        JLabel queueText = new JLabel("Next Block: " + nextBlock.toString());
+        queueText.setText("Next Block: " + nextBlock.toString());
         queuePanel.add(queueText, BorderLayout.CENTER);
 
         add(titlePanel, BorderLayout.NORTH);
@@ -49,6 +53,20 @@ public class GameFrame extends JPanel {
         //System.out.println(gamePanel.getX() + ", " + gamePanel.getY());
         g.fillRect(gamePanel.getX()-10, gamePanel.getY()-10, game.getBoardSizeX() * Game.GridUi.CELL_PIXEL_SIZE + 10,
                 game.getBoardSizeY() * Game.GridUi.CELL_PIXEL_SIZE + 10);
+    }
+
+    public void update() {
+        Block nextBlock = game.getBlockGenerate().getQueue().get(0);
+        queueText.setText("Next Block: " + nextBlock.toString());
+        repaint();
+    }
+
+    public void setOnMultiGameBoard(MultiGameBoard onMultiGameBoard) {
+        this.onMultiGameBoard = onMultiGameBoard;
+    }
+
+    public MultiGameBoard getOnMultiGameBoard() {
+        return onMultiGameBoard;
     }
 
     public Game getGame() {
