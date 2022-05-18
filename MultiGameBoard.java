@@ -38,6 +38,10 @@ public class MultiGameBoard extends JFrame {
         setVisible(true);
     }
 
+    public void setCells(Cell[][] cells) {
+        game2.getBoard().setCells(cells);
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);

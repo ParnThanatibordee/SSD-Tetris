@@ -79,6 +79,10 @@ public class Board {
         return cells;
     }
 
+    public void setCells(Cell[][] cells) {
+        this.cells = cells;
+    }
+
     public void blockFall() {
         for (Block block : blocks) {
             if (block.getY() < height - 1) {

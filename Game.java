@@ -46,7 +46,7 @@ public class Game extends JPanel{
                 public void received(Connection connection, Object object) {
                     super.received(connection, object);
                     if (object instanceof BoardMessage) {
-                        // ส่งไปให้ gameBoard
+                        frameObserver.getOnMultiGameBoard().setCells(((BoardMessage) object).cells);
                     }
                 }
             });
@@ -85,7 +85,10 @@ public class Game extends JPanel{
             @Override
             public void run() {
                 if (Objects.equals(gameMode, "MultiPlayer")) {
-                    // เริ่มเกม
+                    EventMessage eventMessage = new EventMessage();
+                    eventMessage.senderTitle = title;
+                    eventMessage.actionText = "start the game";
+                    client.sendTCP(eventMessage);
                 }
                 addBlock(0, 0);
                 while(!gameOver) {
@@ -116,7 +119,13 @@ public class Game extends JPanel{
                 }
                 // after finish game
                 if (Objects.equals(gameMode, "MultiPlayer")) {
-                    // send event ว่า game over
+                    EventMessage eventMessage = new EventMessage();
+                    eventMessage.senderTitle = title;
+                    eventMessage.actionText = "game over";
+                    client.sendTCP(eventMessage);
+
+                    // ให้ multi game board หยุดทำงานแล้วขึ้น game over
+                    // อีกคน win
                 }
             }
         };
@@ -181,7 +190,6 @@ public class Game extends JPanel{
             // currentControlBlock อาจจะเก็บใน game หรือ block factory
             if (currentControlBlock != null) {
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    System.out.println("*");
                     Command c = new CommandMoveDown(currentControlBlock);
                     c.execute();
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -203,6 +211,10 @@ public class Game extends JPanel{
         board.getBlocks().add(block);
 
         currentControlBlock = block;
+    }
+
+    public Board getBoard() {
+        return board;
     }
 
     public String getTitle() {
