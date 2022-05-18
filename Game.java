@@ -3,8 +3,9 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
-public class Game extends JPanel {
+public class Game extends JPanel{
     // แก้เป็น JPanel
     private String title;
     private int boardSizeX = 10;
@@ -14,6 +15,8 @@ public class Game extends JPanel {
     private Controller controller;
     private long delayed = 200;
     private boolean gameOver;
+
+    GameFrame frameObserver;
 
     private Board board;
 
@@ -55,6 +58,7 @@ public class Game extends JPanel {
                     // รอเอาโค้ด Block fall
                     if (currentControlBlock.isStopFall()) {
                         addBlock(0, 0);
+                        notifyFrameObserver();
                     }
 
                     gameOver = isGameOver();
@@ -171,6 +175,14 @@ public class Game extends JPanel {
 
     private boolean isGameOver() {
         return board.blockOverCeil();
+    }
+
+    public void setFrameObserver(GameFrame frameObserver) {
+        this.frameObserver = frameObserver;
+    }
+
+    public void notifyFrameObserver() {
+        frameObserver.update();
     }
 
     public static void main(String[] args) {
