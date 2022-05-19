@@ -104,7 +104,9 @@ public class Game extends JPanel{
                     // game logic
                     if (currentControlBlock.isStopFall()) {
                         addBlock(0, 0);
-                        notifyFrameObserver();
+                        if (frameObserver != null) {
+                            notifyFrameObserver();
+                        }
                     }
 
                     gameOver = isGameOver();
@@ -266,10 +268,5 @@ public class Game extends JPanel{
 
     public void notifyFrameObserver() {
         frameObserver.update();
-    }
-
-    public static void main(String[] args) {
-        Game game = new Game("Player 1", "SinglePlayer");
-        game.start();
     }
 }
