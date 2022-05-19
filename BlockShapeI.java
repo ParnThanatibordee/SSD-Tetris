@@ -14,4 +14,8 @@ public class BlockShapeI extends BlockShape {
         return color;
     }
 
+    public String getShape() {
+        return "I Shape";
+    }
+
 }

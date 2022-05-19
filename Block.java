@@ -67,4 +67,8 @@ public class Block {
         return this.shape.getWidth();
     }
 
+    @Override
+    public String toString() {
+        return "Block " + shape.getShape();
+    }
 }

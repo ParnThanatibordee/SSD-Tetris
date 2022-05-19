@@ -15,4 +15,8 @@ public class BlockShapeZ extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    public String getShape() {
+        return "Z Shape";
+    }
 }

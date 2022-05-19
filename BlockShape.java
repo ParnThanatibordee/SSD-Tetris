@@ -38,5 +38,8 @@ public abstract class BlockShape {
         return block[x][y] == 1;
     }
 
+    public String getShape() {
+        return "Unknown Shape";
+    }
 
 }

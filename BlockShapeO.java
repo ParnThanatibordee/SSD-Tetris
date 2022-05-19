@@ -20,4 +20,8 @@ public class BlockShapeO extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    public String getShape() {
+        return "O Shape";
+    }
 }

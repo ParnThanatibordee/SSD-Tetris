@@ -16,4 +16,8 @@ public class BlockShapeL extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    public String getShape() {
+        return "L Shape";
+    }
 }

@@ -18,4 +18,8 @@ public class BlockShapeS extends BlockShape {
     public Color getColor() {
         return color;
     }
+
+    public String getShape() {
+        return "S Shape";
+    }
 }
