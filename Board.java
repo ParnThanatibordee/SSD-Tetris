@@ -95,12 +95,8 @@ public class Board {
     }
 
     public boolean collisionToTop(Block block) {
-        int blockY = block.getY();
-
-        int blockHeight = block.getHeight();
-
-        for (int i = 0; i < blockHeight; i++) {
-            if (blockY + i < 0) {
+        for (int i = 0; i < width; i++) {
+            if (cells[i][1].isCovered()) {
                 return true;
             }
         }

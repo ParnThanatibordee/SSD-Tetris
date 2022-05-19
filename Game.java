@@ -118,6 +118,11 @@ public class Game extends JPanel{
                     eventMessage.actionText = "game over";
                     client.sendTCP(eventMessage);
                 }
+                JOptionPane.showMessageDialog(
+                        Game.this,
+                        "You lose!",
+                        "You block over the ceil!",
+                        JOptionPane.WARNING_MESSAGE);
             }
         };
         thread.start();
