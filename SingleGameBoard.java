@@ -20,6 +20,7 @@ public class SingleGameBoard extends JFrame {
         addKeyListener(game.getController());
         game.start();
 
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         pack();
     }

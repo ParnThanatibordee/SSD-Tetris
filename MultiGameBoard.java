@@ -30,6 +30,7 @@ public class MultiGameBoard extends JFrame {
 
         // update Board
 
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         pack();
     }
